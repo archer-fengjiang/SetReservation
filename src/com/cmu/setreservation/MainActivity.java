@@ -32,7 +32,8 @@ public class MainActivity extends Activity {
 	private Button setBudgetButton;
 	private Button getPlotButton;
 	private Button cancelButton;
-
+	private Button waitButton;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -181,7 +182,7 @@ public class MainActivity extends Activity {
 				
 				// set dialog message
 				alertDialogBuilder.setCancelable(false);
-				alertDialogBuilder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+				alertDialogBuilder.setPositiveButton("CancelBudget", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						// get user input and set it to result
 						// edit text
@@ -192,6 +193,53 @@ public class MainActivity extends Activity {
 						if(pid != -1){
 							Log.d(TAG, "cancel budget pid:"+pid);
 							MySyscall.CancelBudget(pid);
+						}
+					}
+				});
+				alertDialogBuilder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+					}
+				});
+
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+
+				// show it
+				alertDialog.show();
+			}
+			
+		});
+		
+		/*************************** fine wait button *****************************/
+		this.waitButton = (Button) findViewById(R.id.waitButton);
+		this.waitButton.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(final View v) {
+				// get prompts.xml view
+				LayoutInflater li = LayoutInflater.from(context);
+				View promptsView = li.inflate(R.layout.wait_prompts, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+				// set prompts.xml to alertdialog builder
+				alertDialogBuilder.setView(promptsView);
+
+				final EditText pidText = (EditText) promptsView.findViewById(R.id.editTextWaitPID);
+				
+				// set dialog message
+				alertDialogBuilder.setCancelable(false);
+				alertDialogBuilder.setPositiveButton("WaitPID", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// get user input and set it to result
+						// edit text
+						int pid = -1;
+						try{
+							pid = Integer.parseInt(pidText.getText().toString());
+						}catch(NumberFormatException e){}
+						if(pid != -1){
+							Log.d(TAG, "wait budget pid:"+pid);
+							MySyscall.WaitUntilNextPeriod(pid);
 						}
 					}
 				});

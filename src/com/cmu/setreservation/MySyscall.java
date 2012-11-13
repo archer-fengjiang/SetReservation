@@ -19,11 +19,10 @@ public class MySyscall {
 	private static final String TAG = MySyscall.class.getSimpleName();
 	
 	static public native int GetProcessComputePlotPoint(int pid);
-	
 	static public native int SetProcessBudget(int pid, int budget_sec, 
 			int budget_nsec, int period_sec, int period_nsec, int rtprio);
-	
 	static public native void CancelBudget(int pid);
+	static public native void WaitUntilNextPeriod(int pid);
 	
 	static {
 		System.loadLibrary("ndk1");

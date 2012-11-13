@@ -70,5 +70,14 @@
         android:layout_toRightOf="@+id/getPlotButton"
         android:text="Cancel" />
 
+    <Button
+        android:id="@+id/waitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/scrollView1"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/cancelButton"
+        android:text="Wait" />
+
 </RelativeLayout>
         
