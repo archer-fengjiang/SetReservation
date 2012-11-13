@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
 	private Button refreshButton;
 	private Button setBudgetButton;
 	private Button getPlotButton;
+	private Button cancelButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -72,17 +73,31 @@ public class MainActivity extends Activity {
 				alertDialogBuilder.setView(promptsView);
 
 				final EditText pidText = (EditText) promptsView.findViewById(R.id.editTextPID);
-				final EditText CText = (EditText) promptsView.findViewById(R.id.editC);
-				final EditText TText = (EditText) promptsView.findViewById(R.id.editT);
-				final EditText PText = (EditText) promptsView.findViewById(R.id.editP);
+				final EditText budgetText = (EditText) promptsView.findViewById(R.id.editBudget);
+				final EditText periodText = (EditText) promptsView.findViewById(R.id.editPeriod);
+				final EditText priorityText = (EditText) promptsView.findViewById(R.id.editPriority);
 				
 				// set dialog message
 				alertDialogBuilder.setCancelable(false);
 				alertDialogBuilder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						// get user input and set it to result
-						// edit text
-						Log.d(TAG, "PID:"+pidText.getText()+"\tC:"+CText.getText()+"\tT:"+TText.getText()+"\tP:"+PText.getText());
+						int pid = 0, budget_sec = 0, budget_nsec = 0, period_sec = 0, period_nsec = 0, rtprio = 0;
+						boolean success = true;
+						try{
+							pid = Integer.parseInt(pidText.getText().toString());
+							Log.d(TAG, "budget_sec:"+budgetText.getText().toString());
+							budget_sec = Integer.parseInt(budgetText.getText().toString().split(":")[0]);
+							budget_nsec = Integer.parseInt(budgetText.getText().toString().split(":")[1]);
+							period_sec = Integer.parseInt(periodText.getText().toString().split(":")[0]);
+							period_nsec = Integer.parseInt(periodText.getText().toString().split(":")[1]);
+							rtprio = Integer.parseInt(priorityText.getText().toString());
+						} catch(NumberFormatException e){
+							success = false;
+						}
+						if(success){
+							MySyscall.SetProcessBudget(pid, budget_sec, budget_nsec, period_sec, period_nsec, rtprio);
+						}
 					}
 				});
 				alertDialogBuilder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
@@ -99,7 +114,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		// fine getPlot button
+		/*************************** fine getPlot button *****************************/
 		this.getPlotButton = (Button) findViewById(R.id.getPlotButton);
 		this.getPlotButton.setOnClickListener(new OnClickListener(){
 
@@ -127,14 +142,56 @@ public class MainActivity extends Activity {
 						}catch(NumberFormatException e){}
 						if(pid != -1){
 							Log.d(TAG, "PID:"+pid);
-//							Intent mIntent = new Intent(v.getContext(), GetPlotActivity.class);
-//							Bundle b = new Bundle();
-//							b.putInt("PID", pid);
-//							mIntent.putExtras(b);
-//							startActivityForResult(mIntent, 0);
 							PlotChart chart = new PlotChart();
 							Intent mIntent = chart.execute(v.getContext(), pid, 10000);
 							startActivityForResult(mIntent, 0);
+						}
+					}
+				});
+				alertDialogBuilder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+					}
+				});
+
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+
+				// show it
+				alertDialog.show();
+			}
+			
+		});
+		
+		/*************************** fine cancelBudget button *****************************/
+		this.cancelButton = (Button) findViewById(R.id.cancelButton);
+		this.cancelButton.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(final View v) {
+				// get prompts.xml view
+				LayoutInflater li = LayoutInflater.from(context);
+				View promptsView = li.inflate(R.layout.cancel_prompts, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+				// set prompts.xml to alertdialog builder
+				alertDialogBuilder.setView(promptsView);
+
+				final EditText pidText = (EditText) promptsView.findViewById(R.id.editTextCancelPID);
+				
+				// set dialog message
+				alertDialogBuilder.setCancelable(false);
+				alertDialogBuilder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// get user input and set it to result
+						// edit text
+						int pid = -1;
+						try{
+							pid = Integer.parseInt(pidText.getText().toString());
+						}catch(NumberFormatException e){}
+						if(pid != -1){
+							Log.d(TAG, "cancel budget pid:"+pid);
+							MySyscall.CancelBudget(pid);
 						}
 					}
 				});

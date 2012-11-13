@@ -20,24 +20,15 @@ public class MySyscall {
 	
 	static public native int GetProcessComputePlotPoint(int pid);
 	
+	static public native int SetProcessBudget(int pid, int budget_sec, 
+			int budget_nsec, int period_sec, int period_nsec, int rtprio);
+	
+	static public native void CancelBudget(int pid);
+	
 	static {
 		System.loadLibrary("ndk1");
 	}
-	
-	
-	
-	static public void SetProcessBudget(int pid, int t, int budget){
-		//
-	}
-	
-	static public void CancelBudget(int pid){
-		//
-	}
-	
-	static public void WaitUntilNextPeriod(int pid){
-		//
-	}
-	
+
 	static public double[] getProcessPlots(int pid, int count){
 		double[] plotArr = new double[count];
 		for(int i = 0; i < count; i++){

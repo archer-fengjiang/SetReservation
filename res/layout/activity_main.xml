@@ -50,7 +50,7 @@
         android:layout_alignBottom="@+id/refreshButton"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/refreshButton"
-        android:text="SetBudget" />
+        android:text="Set" />
 
     <Button
         android:id="@+id/getPlotButton"
@@ -59,7 +59,16 @@
         android:layout_alignBottom="@+id/setBudgetButton"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/setBudgetButton"
-        android:text="getPlot" />
+        android:text="Plot" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/getPlotButton"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/getPlotButton"
+        android:text="Cancel" />
 
 </RelativeLayout>
         
