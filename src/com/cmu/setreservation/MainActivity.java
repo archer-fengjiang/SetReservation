@@ -127,10 +127,13 @@ public class MainActivity extends Activity {
 						}catch(NumberFormatException e){}
 						if(pid != -1){
 							Log.d(TAG, "PID:"+pid);
-							Intent mIntent = new Intent(v.getContext(), GetPlotActivity.class);
-							Bundle b = new Bundle();
-							b.putInt("PID", pid);
-							mIntent.putExtras(b);
+//							Intent mIntent = new Intent(v.getContext(), GetPlotActivity.class);
+//							Bundle b = new Bundle();
+//							b.putInt("PID", pid);
+//							mIntent.putExtras(b);
+//							startActivityForResult(mIntent, 0);
+							PlotChart chart = new PlotChart();
+							Intent mIntent = chart.execute(v.getContext(), pid, 10000);
 							startActivityForResult(mIntent, 0);
 						}
 					}
