@@ -18,7 +18,7 @@ void Java_com_cmu_setreservation_MySyscall_WaitUntilNextPeriod(JNIEnv *env, jobj
 
 jint Java_com_cmu_setreservation_MySyscall_GetProcessComputePlotPoint(JNIEnv *env, jobject this, jint pid)
 {
-	long l = syscall(378,pid,100);
+	long l = syscall(383,pid);
 	if(l > 0){
 		return 0;
 	} else if (l == 0){
@@ -36,7 +36,7 @@ jint Java_com_cmu_setreservation_MySyscall_SetProcessBudget(JNIEnv *env, jobject
 	period.tv_sec = period_sec;
 	period.tv_nsec = period_nsec;
 
-	return syscall(378, budget, period, rtprio);
+	return syscall(378,pid,&budget,&period,rtprio);
 }
 
 

@@ -28,14 +28,14 @@ public class MySyscall {
 		System.loadLibrary("ndk1");
 	}
 
-	static public double[] getProcessPlots(int pid, int count){
+	static public double[] getProcessPlots(int pid, int count, int millisec){
 		double[] plotArr = new double[count];
 		for(int i = 0; i < count; i++){
 			double d = GetProcessComputePlotPoint(pid);
 			Log.d(TAG, "point:" + d);
 			plotArr[i] = d;
 			try {
-				Thread.sleep(10);
+				Thread.sleep(millisec);
 			} catch (InterruptedException exception) {
 				// TODO Auto-generated catch-block stub.
 				exception.printStackTrace();

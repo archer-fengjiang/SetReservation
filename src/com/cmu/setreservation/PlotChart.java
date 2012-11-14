@@ -8,6 +8,7 @@ import org.achartengine.ChartFactory;
 import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
@@ -24,19 +25,28 @@ import android.graphics.Paint.Align;
  */
 public class PlotChart {
 	
-	public Intent execute(Context context, int pid, int count){
-		String[] titles = new String[] { "2008" };
-	    List<double[]> values = new ArrayList<double[]>();
+	public Intent execute(Context context, int pid, int count, int interval_millisec){
+		String[] titles = new String[] { count +" plots for process " + pid + " with interval " + interval_millisec + " milli second" };
+		List<double[]> x = new ArrayList<double[]>();
+ 	    List<double[]> values = new ArrayList<double[]>();
 //	    values.add(new double[] { 14230, 12300, 14240, 15244, 15900, 19200, 22030, 21200, 19500, 15500,
 //	        12600, 14000 });
 //	    values.add(new double[] { 5230, 7300, 9240, 10540, 7900, 9200, 12030, 11200, 9500, 10500,
 //	        11600, 13500 });
-	    values.add(MySyscall.getProcessPlots(pid, count));
+ 	    double tik = 0.0;
+ 	    double interval_sec = interval_millisec / 1000000.0;
+ 	    double[] tiks = new double[count];
+ 	    for(int i = 0; i < count; i++){
+ 	    	tiks[i] = tik;
+ 	    	tik+=interval_sec;
+ 	    }
+ 	    x.add(tiks);
+	    values.add(MySyscall.getProcessPlots(pid, count, interval_millisec));
 //	    int[] colors = new int[] { Color.BLUE, Color.CYAN };
 	    int[] colors = new int[] { Color.BLUE};
 	    XYMultipleSeriesRenderer renderer = buildBarRenderer(colors);
-	    setChartSettings(renderer, "Monthly sales in the last 2 years", "Month", "Units sold", 0.5,
-	        12.5, 0, 1, Color.GRAY, Color.LTGRAY);
+	    setChartSettings(renderer, "Ploting for process" + pid, "Time", "Executed", 0.5,
+	        12.5, 0, 2, Color.GRAY, Color.LTGRAY);
 	    renderer.getSeriesRendererAt(0).setDisplayChartValues(true);
 //	    renderer.getSeriesRendererAt(1).setDisplayChartValues(true);
 	    renderer.setXLabels(12);
@@ -46,11 +56,11 @@ public class PlotChart {
 	    renderer.setPanEnabled(true, false);
 	    // renderer.setZoomEnabled(false);
 	    renderer.setZoomRate(1.1f);
-	    renderer.setBarSpacing(0.5f);
+	    renderer.setBarSpacing(0.1f);
 	    return ChartFactory.getBarChartIntent(context, buildBarDataset(titles, values), renderer,
 	        Type.STACKED);
 	}
-	
+
 
 	private XYMultipleSeriesDataset buildBarDataset(String[] titles, List<double[]> values) {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();

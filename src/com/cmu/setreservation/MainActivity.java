@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		// Find setBudget button
+		/*************************** Find setBudget button *****************************/
 		this.setBudgetButton = (Button) findViewById(R.id.setBudgetButton);
 		this.setBudgetButton.setOnClickListener(new OnClickListener(){
 			@Override
@@ -87,7 +87,6 @@ public class MainActivity extends Activity {
 						boolean success = true;
 						try{
 							pid = Integer.parseInt(pidText.getText().toString());
-							Log.d(TAG, "budget_sec:"+budgetText.getText().toString());
 							budget_sec = Integer.parseInt(budgetText.getText().toString().split(":")[0]);
 							budget_nsec = Integer.parseInt(budgetText.getText().toString().split(":")[1]);
 							period_sec = Integer.parseInt(periodText.getText().toString().split(":")[0]);
@@ -97,7 +96,13 @@ public class MainActivity extends Activity {
 							success = false;
 						}
 						if(success){
+							Log.d(TAG, "trying to call SetProcessBudget()\nPid:" + pid + 
+									" budget:" + budget_sec + ":" + budget_nsec + 
+									" period:" + period_sec + ":" + period_nsec +
+									" reprio:" + rtprio);
 							MySyscall.SetProcessBudget(pid, budget_sec, budget_nsec, period_sec, period_nsec, rtprio);
+						} else {
+							Log.d(TAG, "trying to call SetProcessBudget() failed");
 						}
 					}
 				});
@@ -130,21 +135,27 @@ public class MainActivity extends Activity {
 				alertDialogBuilder.setView(promptsView);
 
 				final EditText pidText = (EditText) promptsView.findViewById(R.id.editTextGetplotPID);
-				
+				final EditText countText = (EditText) promptsView.findViewById(R.id.editTextGetplotCount);
+				final EditText intervalText = (EditText) promptsView.findViewById(R.id.editTextGetplotInterval);
 				// set dialog message
 				alertDialogBuilder.setCancelable(false);
 				alertDialogBuilder.setPositiveButton("Get", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						// get user input and set it to result
 						// edit text
-						int pid = -1;
+						int pid = 0, count = 0, interval = 0;
+						boolean success = true;
 						try{
 							pid = Integer.parseInt(pidText.getText().toString());
-						}catch(NumberFormatException e){}
-						if(pid != -1){
-							Log.d(TAG, "PID:"+pid);
+							count = Integer.parseInt(countText.getText().toString());
+							interval = Integer.parseInt(intervalText.getText().toString());
+						}catch(NumberFormatException e){
+							success = false;
+						}
+						if(success){
+							Log.d(TAG, "PID:"+ pid + " Count:" + count + " Interval:" + interval);
 							PlotChart chart = new PlotChart();
-							Intent mIntent = chart.execute(v.getContext(), pid, 10000);
+							Intent mIntent = chart.execute(v.getContext(), pid, count, interval);
 							startActivityForResult(mIntent, 0);
 						}
 					}
