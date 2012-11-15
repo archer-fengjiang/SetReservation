@@ -13,7 +13,7 @@ void Java_com_cmu_setreservation_MySyscall_CancelBudget(JNIEnv *env, jobject thi
 
 void Java_com_cmu_setreservation_MySyscall_WaitUntilNextPeriod(JNIEnv *env, jobject this, jint pid)
 {
-	syscall(380, pid);
+	syscall(380,pid);
 }
 
 jint Java_com_cmu_setreservation_MySyscall_GetProcessComputePlotPoint(JNIEnv *env, jobject this, jint pid)
